@@ -1,0 +1,13 @@
+Diagram Link: https://i.imgur.com/yYWvTcF.png
+
+### 1. New Elements and Their Roles
+- **Second Load Balancer (HAproxy Cluster)**: Added to create a high-availability cluster with the first load balancer. This eliminates the load balancer as a Single Point of Failure (SPOF). If one fails, the other takes over traffic management.
+- **Separated Web Server**: By moving the web server (Nginx) to its own dedicated server, we optimize it for handling static content and SSL termination without competing for resources with the application logic.
+- **Separated Application Server**: Moving the application server to its own machine ensures that heavy processing and logic execution do not affect the database or web server performance.
+- **Separated Database Server (MySQL Cluster)**: Dedicated database servers allow for better optimization of disk I/O and memory, specifically for data storage and retrieval.
+
+### 2. Why Scale Up and Split Components?
+- **Resource Isolation**: Each component (Web, App, DB) now has its own CPU, RAM, and storage. A spike in application logic processing will no longer slow down the database or vice versa.
+- **Improved Scalability**: We can now scale each layer independently. For example, if we need more processing power, we can add more application servers without needing to add more database servers.
+- **Reduced SPOF**: By clustering the Load Balancers, we ensure that the "entry point" of our infrastructure is redundant and highly available.
+- **Security and Maintenance**: It is easier to secure and maintain servers that only perform one specific task (e.g., applying specific firewall rules just for the database server).
