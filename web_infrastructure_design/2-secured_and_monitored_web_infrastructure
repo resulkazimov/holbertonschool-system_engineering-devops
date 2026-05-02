@@ -1,0 +1,18 @@
+Diagram Link: https://i.imgur.com/QpJLCPS.png
+
+### 1. New Elements and Their Roles
+- **Firewalls (3 units)**: Added to protect each server by filtering incoming and outgoing network traffic and blocking unauthorized access.
+- **SSL Certificate (HTTPS)**: Added to encrypt the data transmitted between the user's browser and the web server, ensuring privacy and data integrity.
+- **Monitoring Clients (3 units)**: Added to collect system metrics and logs (CPU usage, memory, error logs) to ensure the health and performance of the infrastructure.
+
+### 2. Technical Specifics
+- **Firewalls Purpose**: They act as a security barrier that allows only specific traffic (like HTTP/HTTPS) through authorized ports while blocking potentially malicious requests.
+- **HTTPS Traffic**: Serving traffic over HTTPS ensures that sensitive information (like passwords or credit card data) cannot be intercepted or read by third parties.
+- **Monitoring Purpose**: It is used to detect issues in real-time, analyze performance trends, and prevent downtime through alerts.
+- **Data Collection**: Monitoring tools usually use an agent (client) installed on the server that periodically pushes metrics to a central dashboard (e.g., Sumologic, Nagios).
+- **Monitoring Web Server QPS**: To monitor Queries Per Second (QPS), you need to configure the monitoring tool to parse the web server access logs (like Nginx logs) and calculate the number of requests handled per second.
+
+### 3. Issues and Potential Problems
+- **SSL Termination at Load Balancer**: Terminating SSL at the load balancer means the traffic between the load balancer and the backend servers is unencrypted (plain HTTP), which can be a security risk in the internal network.
+- **Single Write MySQL Server**: Having only one Primary (Master) server for writes is a problem because if that server fails, the application cannot perform any data updates, even if it can still read data.
+- **Identical Components on All Servers**: Running the database, web server, and app server on the same machine creates resource contention. A spike in database CPU usage can slow down the web server, and it makes horizontal scaling more complex.
