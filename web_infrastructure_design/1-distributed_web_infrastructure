@@ -1,0 +1,21 @@
+Diagram Link: https://i.imgur.com/o2uQvdM.png
+
+### 1. New Elements and Their Roles
+- **Load Balancer (HAproxy)**: Added to distribute incoming traffic across multiple servers to prevent any single server from becoming overwhelmed.
+- **Additional Server**: Added to provide redundancy. If one server fails, the other can continue to serve users, improving availability.
+- **Database Primary-Replica Cluster**: Separates database operations to improve performance and data safety.
+
+### 2. Load Balancer Details
+- **Distribution Algorithm**: This setup uses **Round Robin**. It works by sending each new request to the next server in line (Server 1, then Server 2, then back to Server 1), ensuring an even distribution of load.
+- **Active-Active vs Active-Passive**:
+    - **Active-Active**: Both servers (or load balancers) are receiving traffic simultaneously. (This is our current setup).
+    - **Active-Passive**: One server is active while the other stays on standby, only taking over if the active one fails.
+
+### 3. Database Cluster (Primary-Replica)
+- **How it works**: The **Primary** node handles all write operations (INSERT, UPDATE, DELETE), while the **Replica** node synchronizes with the Primary to mirror the data.
+- **Difference in Application**: The application sends all data-changing requests (writes) to the Primary node. Read requests (SELECT) can be sent to the Replica node to reduce the load on the Primary.
+
+### 4. Issues with this Infrastructure
+- **SPOF (Single Point of Failure)**: The Load Balancer itself is now a SPOF. If HAproxy fails, the entire stack becomes inaccessible even if the servers are healthy. The Primary Database is also a SPOF for write operations.
+- **Security Issues**: There is no **Firewall** to block unauthorized traffic and no **HTTPS** to encrypt data between the user and the infrastructure.
+- **No Monitoring**: We have no way to track the health of the servers or get alerted if a service crashes.
